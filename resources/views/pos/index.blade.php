@@ -64,7 +64,7 @@
 
         <!-- Right side - Cart -->
         <div class="col-lg-4 d-flex flex-column h-100">
-            <div class="card flex-grow-1 d-flex flex-column h-100">
+            <div class="card flex-grow-1 d-flex flex-column h-100" style="margin-bottom: 0 !important;">
                 <!-- Cart Header -->
                 <div class="card-header border-bottom">
                     <div class="row g-3">
