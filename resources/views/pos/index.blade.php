@@ -2,9 +2,9 @@
 
 @section('content')
 <div id="pos-app" class="h-100">
-    <div class="row g-4">
+    <div class="row g-4 h-100">
         <!-- Left side - Products -->
-        <div class="col-lg-8 d-flex flex-column mb-3">
+        <div class="col-lg-8 d-flex flex-column mb-3 h-100">
             <div class="card flex-grow-1 d-flex flex-column m-0">
                 <div class="card-header">
                     <div class="row g-3">
@@ -64,7 +64,7 @@
 
         <!-- Right side - Cart -->
         <div class="col-lg-4 d-flex flex-column h-100">
-            <div class="card flex-grow-1 d-flex flex-column">
+            <div class="card flex-grow-1 d-flex flex-column h-100">
                 <!-- Cart Header -->
                 <div class="card-header border-bottom">
                     <div class="row g-3">

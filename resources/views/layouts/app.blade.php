@@ -201,7 +201,7 @@
         </div>
     </nav>
 
-    <div class="container-fluid py-4" style="padding-bottom: 0 !important;height: calc(100dvh - 92px);">
+    <div class="container-fluid py-4" style="padding-bottom: 20px !important;height: calc(100dvh - 62px);">
         @yield('content')
     </div>
 
