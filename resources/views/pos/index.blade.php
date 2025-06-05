@@ -5,7 +5,7 @@
     <div class="row g-4 h-100">
         <!-- Left side - Products -->
         <div class="col-lg-8 d-flex flex-column mb-3 h-100">
-            <div class="card flex-grow-1 d-flex flex-column m-0">
+            <div class="card flex-grow-1 d-flex flex-column m-0 h-100">
                 <div class="card-header">
                     <div class="row g-3">
                         <div class="col-12">
