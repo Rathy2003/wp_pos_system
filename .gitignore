@@ -16,7 +16,9 @@
 /public/build
 /public/hot
 /public/images/*
+!/public/images/.gitkeep
 /public/profile/*
+!/public/profile/.gitkeep
 /public/storage
 /storage/*.key
 /storage/pail
