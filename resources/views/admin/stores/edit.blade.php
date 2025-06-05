@@ -41,7 +41,10 @@
             </div>
             <div class="mb-3">
                 <label for="logo" class="form-label">Logo</label>
-                <input type="file" name="logo" id="logo" class="form-control">
+                <input type="file" name="logo" id="logo" accept="image/jpeg, image/png, image/jpg, image/webp" class="form-control">
+                @if($store->logo)
+                    <img src="{{ asset('stores/' . $store->logo) }}" alt="Store Logo" class="img-fluid mt-2" style="width: 150px;height: 150px;object-fit: cover;border-radius: 5px;">
+                @endif
             </div>
             <button type="submit" class="btn btn-primary">Update Store</button>
         </form>

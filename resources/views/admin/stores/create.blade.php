@@ -34,13 +34,14 @@
             <div class="mb-3">
                 <label for="status" class="form-label">Status</label>
                 <select name="status" id="status" class="form-control">
-                    <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Active</option>
-                    <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive</option>
+                    <option value="" disabled selected>Select Status</option>
+                    <option value="1" {{ old('status') && old('status') == 1 ? 'selected' : '' }}>Active</option>
+                    <option value="0" {{ old('status') && old('status') == 0 ? 'selected' : '' }}>Inactive</option>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="logo" class="form-label">Logo</label>
-                <input type="file" name="logo" id="logo" accept="image/*" class="form-control">
+                <input type="file" name="logo" id="logo" accept="image/jpeg, image/png, image/jpg, image/webp" class="form-control">
             </div>
             <button type="submit" class="btn btn-primary">Save Store</button>
         </form>

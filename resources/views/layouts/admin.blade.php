@@ -9,9 +9,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@100..900&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: "Noto Sans Khmer", sans-serif;
             background-color: #f8f9fa;
         }
         
@@ -308,7 +311,7 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="top-navbar">
+        <div class="top-navbar position-sticky z-3" style="top: 32px">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="page-title">@yield('title')</h1>
                 <div class="d-flex align-items-center">

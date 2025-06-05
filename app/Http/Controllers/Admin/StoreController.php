@@ -35,7 +35,7 @@ class StoreController extends Controller
             'name' => 'required|string|unique:stores,name|max:255',
             'description' => 'nullable|string',
             'address' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5000',
             'status' => 'required|boolean',
         ]);
 
@@ -48,13 +48,15 @@ class StoreController extends Controller
             $filename = $logoName;
         }
 
-        $store = Store::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'address' => $request->address,
-            'logo' => $filename,
-            'status' => $request->status,
-        ]);
+        $store = new Store();
+        $store->name = $request->name;
+        $store->description = $request->description;
+        $store->address = $request->address;
+        if ($filename) {
+            $store->logo = $filename;
+        }
+        $store->status = $request->status;
+        $store->save();
         
         return redirect()->route('stores.index')->with('success', 'Store created successfully');
     }
@@ -85,7 +87,7 @@ class StoreController extends Controller
             'name' => 'required|string|unique:stores,name,' . $id . '|max:255',
             'description' => 'nullable|string',
             'address' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5000',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5000',
             'status' => 'required|boolean',
         ]);
 
@@ -108,7 +110,7 @@ class StoreController extends Controller
         }
         $store->save();
 
-        if ($oldLogo && !$filename) {
+        if ($oldLogo && $filename) {
             if (file_exists(public_path('stores/' . $oldLogo))) {
                 unlink(public_path('stores/' . $oldLogo));
             }

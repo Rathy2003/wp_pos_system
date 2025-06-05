@@ -54,7 +54,7 @@
 @endsection
 
 @section('content')
-<div class="container-fluid">
+<div>
     <!-- Header -->
     <div class="card mb-4">
         <div class="card-body">

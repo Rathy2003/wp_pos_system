@@ -3,7 +3,7 @@
 @section('title', 'Stores')
 
 @section('content')
-<div class="container-fluid">
+<div>
         <div class="card mb-4">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
@@ -54,11 +54,15 @@
                             <td>{{ $store->address }}</td>
                             <td>{{ $store->status ? 'Active' : 'Inactive' }}</td>
                             <td>
-                                <a href="{{ route('stores.edit', $store->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <a href="{{ route('stores.edit', $store->id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                                 <form action="{{ route('stores.destroy', $store->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
                                 </form>
                             </td>
                         </tr>

@@ -45,7 +45,9 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(10)->withQueryString();
-        $categories = Category::where('status', true)->get();
+        $categories = Category::where('status', true)
+        ->where('store_id', auth()->user()->store_id)
+        ->get();
         
         return view('admin.products.index', compact('products', 'categories'));
     }
