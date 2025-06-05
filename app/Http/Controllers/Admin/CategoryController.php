@@ -5,14 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::latest();
-
+        $query = Category::where('store_id', auth()->user()->store_id)->latest();
         // Search filter
         if ($request->filled('search')) {
             $search = $request->search;
@@ -37,7 +36,14 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories')->where(function ($query) {
+                    return $query->where('store_id', auth()->user()->store_id);
+                })
+            ],
             'description' => 'nullable|string',
             'status' => 'nullable'
         ]);
@@ -46,9 +52,9 @@ class CategoryController extends Controller
         try {
             Category::create([
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
                 'description' => $request->description,
-                'status' => $request->has('status')
+                'status' => $request->has('status'),
+                'store_id' => auth()->user()->store_id
             ]);
 
             return redirect()
@@ -71,7 +77,14 @@ class CategoryController extends Controller
     {
         // Validate the request
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories')->ignore($category->id)->where(function ($query) use ($category) {
+                    return $query->where('store_id', auth()->user()->store_id);
+                })
+            ],
             'description' => 'nullable|string',
             'status' => 'nullable'
         ]);
@@ -80,7 +93,6 @@ class CategoryController extends Controller
             // Update category with proper data
             $category->update([
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
                 'description' => $request->description,
                 'status' => $request->has('status')
             ]);

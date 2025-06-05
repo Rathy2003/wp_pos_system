@@ -13,7 +13,8 @@ class Sale extends Model
         'net_amount',
         'customer_name',
         'loyalty_points',
-        'payment_method'
+        'payment_method',
+        'store_id'
     ];
 
     public function items(): HasMany

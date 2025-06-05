@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('customer_name')->nullable();
             $table->integer('loyalty_points')->default(0);
             $table->string('payment_method')->default('cash');
+            $table->foreignId('store_id')
+                ->constrained('stores')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
             $table->timestamps();
         });
     }

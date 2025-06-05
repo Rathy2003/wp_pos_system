@@ -2,10 +2,10 @@
 
 @section('content')
 <div id="pos-app" class="h-100">
-    <div class="row g-4 h-100">
+    <div class="row g-4">
         <!-- Left side - Products -->
-        <div class="col-lg-8 d-flex flex-column h-100">
-            <div class="card flex-grow-1 d-flex flex-column">
+        <div class="col-lg-8 d-flex flex-column mb-3">
+            <div class="card flex-grow-1 d-flex flex-column m-0">
                 <div class="card-header">
                     <div class="row g-3">
                         <div class="col-12">
@@ -80,7 +80,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <button class="btn btn-outline-danger" @click="resetCart">
+                            <button class="btn btn-outline-danger" :class="{disabled: cart.length === 0}" @click="resetCart" style="min-width: max-content;height: 100%;">
                                 <i class="fas fa-trash"></i>
                                 Clear All
                             </button>
@@ -177,74 +177,6 @@
         </div>
     </div>
 
-    <!-- Printable Invoice (Hidden by default) -->
-    <div id="printable-invoice" class="d-none">
-        <div class="invoice-print">
-            <!-- Company Info -->
-            <div class="text-center mb-4">
-                <h4>Your Company Name</h4>
-                <p class="mb-1">123 Business Street, City, Country</p>
-                <p class="mb-1">Phone: (123) 456-7890</p>
-                <p>Email: info@yourcompany.com</p>
-            </div>
-
-            <!-- Invoice Details -->
-            <div class="row mb-4">
-                <div class="col-6">
-                    <h6>Invoice to:</h6>
-                    <p class="mb-1">@{{ completedSale ? completedSale.customer_name || 'Walk-in Customer' : 'Walk-in Customer' }}</p>
-                    <p class="mb-1">Invoice #: @{{ currentSale?.id }}</p>
-                    <p>Date: @{{ new Date().toLocaleDateString() }}</p>
-                </div>
-                <div class="col-6 text-end">
-                    <h6>Payment Method:</h6>
-                    <p>@{{ completedSale?.payment_method === 'cash' ? '💵 Cash Payment' : '💳 Card Payment' }}</p>
-                </div>
-            </div>
-
-            <!-- Items Table -->
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th class="text-center">Quantity</th>
-                        <th class="text-end">Price</th>
-                        <th class="text-end">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in completedSale?.items" :key="item.id">
-                        <td>@{{ item.name }}</td>
-                        <td class="text-center">@{{ item.quantity }}</td>
-                        <td class="text-end">$@{{ Number(item.price).toFixed(2) }}</td>
-                        <td class="text-end">$@{{ Number(item.price * item.quantity).toFixed(2) }}</td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="3" class="text-end">Subtotal:</td>
-                        <td class="text-end">$@{{ Number(completedSale?.subtotal || 0).toFixed(2) }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="text-end">Tax (10%):</td>
-                        <td class="text-end">$@{{ Number(completedSale?.tax || 0).toFixed(2) }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                        <td class="text-end"><strong>$@{{ Number(completedSale?.total || 0).toFixed(2) }}</strong></td>
-                    </tr>
-                </tfoot>
-            </table>
-
-            <!-- Footer -->
-            <div class="text-center mt-4">
-                <p class="mb-1">Thank you for your business!</p>
-                <p class="mb-1">Loyalty Points Earned: @{{ Math.floor(completedSale?.total || 0) }}</p>
-                <small class="text-muted">This is a computer generated invoice</small>
-            </div>
-        </div>
-    </div>
-
     <!-- Regular Invoice Modal -->
     <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -257,10 +189,9 @@
                     <div class="invoice-content">
                         <!-- Company Info -->
                         <div class="text-center mb-4">
-                            <h4>Your Company Name</h4>
-                            <p class="mb-1">123 Business Street, City, Country</p>
+                            <h4>{{ auth()->user()->store->name }}</h4>
+                            <p class="mb-1">{{ auth()->user()->store->address }}</p>
                             <p class="mb-1">Phone: (123) 456-7890</p>
-                            <p>Email: info@yourcompany.com</p>
                         </div>
 
                         <!-- Invoice Details -->
@@ -313,9 +244,7 @@
 
                         <!-- Footer -->
                         <div class="text-center mt-4">
-                            <p class="mb-1">Thank you for your business!</p>
-                            <p class="mb-1">Loyalty Points Earned: @{{ Math.floor(completedSale?.total || 0) }}</p>
-                            <small class="text-muted">This is a computer generated invoice</small>
+                            <p class="mb-1">Thank you for supporting us!</p>
                         </div>
                     </div>
                 </div>
@@ -543,7 +472,7 @@ createApp({
             paymentMethod: 'cash',
             currentSale: null,
             invoiceModal: null,
-            completedSale: null
+            completedSale: null,
         }
     },
     computed: {
@@ -592,8 +521,9 @@ createApp({
             this.selectedCategory = category
         },
         loadProducts() {
-            axios.get("{{asset('api/products')}}")
+            axios.get("{{route('api.products')}}")
             .then(response => {
+                console.log(response);
                 if(response.status == 200){
                     console.log(response.data);
 
@@ -674,7 +604,7 @@ createApp({
                 }))
             }
 
-            axios.post('/api/sales', saleData)
+            axios.post('{{ route('api.sales.store') }}', saleData)
                 .then(response => {
                     if (response.data.sale) {
                         this.currentSale = response.data.sale
@@ -744,10 +674,9 @@ createApp({
                     <div class="invoice-box">
                         <!-- Company Info -->
                         <div class="text-center mb-4">
-                            <h4>Your Company Name</h4>
-                            <p class="mb-1">123 Business Street, City, Country</p>
+                            <h4>{{ auth()->user()->store->name }}</h4>
+                            <p class="mb-1">{{ auth()->user()->store->address }}</p>
                             <p class="mb-1">Phone: (123) 456-7890</p>
-                            <p>Email: info@yourcompany.com</p>
                         </div>
 
                         <!-- Invoice Details -->
@@ -802,9 +731,7 @@ createApp({
 
                         <!-- Footer -->
                         <div class="text-center mt-4">
-                            <p class="mb-1">Thank you for your business!</p>
-                            <p class="mb-1">Loyalty Points Earned: ${Math.floor(this.completedSale.total)}</p>
-                            <small class="text-muted">This is a computer generated invoice</small>
+                            <p class="mb-1">Thank you for supporting us!</p>
                         </div>
                     </div>
                 </body>

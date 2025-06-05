@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>POS System</title>
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/x-icon">
+    <title>{{ auth()->user()->store->name }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -163,18 +164,40 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
+        <div class="container-fluid mx-4">
             <a class="navbar-brand" href="/">
                 <i class="fas fa-shopping-cart me-2"></i>
-                {{ $siteSettings['store_name'] ?? 'POS System' }}
+                {{ auth()->user()->store->name }}
             </a>
 
-                <i onclick="toggleFullscreen()" style="font-size:25px;color:white" class="fas fa-expand"></i>
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-transparent nav-link text-white" type="button">
+                    <i id="fullscreen-icon" onclick="toggleFullscreen()" style="font-size:23px;color:white" class="fa-solid fa-maximize"></i>
+                    <i id="minimize-icon" onclick="backToNormal()" class="fa-solid fa-minimize" style="display:none;font-size:22px;color:white"></i>
+                </button>
+               
+                <div class="dropdown">
+                    <button class="btn btn-transparent nav-link text-white dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user"></i>
+                        {{ auth()->user()->name }}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="left: -15px">
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="post">
+                                @csrf
+                                <button type="submit" class="dropdown-item">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+                
 
         </div>
     </nav>
 
-    <div class="container-fluid py-4" style="padding-bottom: 0 !important;">
+    <div class="container-fluid py-4" style="padding-bottom: 0 !important;height: calc(100dvh - 92px);">
         @yield('content')
     </div>
 
@@ -182,6 +205,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
          function toggleFullscreen() {
+            const fullscreenIcon = document.getElementById('fullscreen-icon');
+            const minimizeIcon = document.getElementById('minimize-icon');
+            fullscreenIcon.style.display = 'none';
+            minimizeIcon.style.display = 'block';
             const element = document.documentElement;
             if (element.requestFullscreen) {
                 element.requestFullscreen();
@@ -189,6 +216,21 @@
                 element.webkitRequestFullscreen();
             } else if (element.msRequestFullscreen) {
                 element.msRequestFullscreen();
+            }
+        }
+
+        function backToNormal() {
+            const fullscreenIcon = document.getElementById('fullscreen-icon');
+            const minimizeIcon = document.getElementById('minimize-icon');
+            fullscreenIcon.style.display = 'block';
+            minimizeIcon.style.display = 'none';
+            const element = document.documentElement;
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
             }
         }
     </script>

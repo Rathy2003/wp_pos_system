@@ -115,7 +115,6 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Slug</th>
                             <th>Description</th>
                             <th>Products</th>
                             <th>Status</th>
@@ -125,9 +124,8 @@
                     <tbody>
                         @forelse($categories as $category)
                         <tr>
+                            <td>{{ $category->id }}</td>
                             <td class="fw-medium">{{ $category->name }}</td>
-                            <td class="text-muted">{{ $category->slug }}</td>
-                            <td>{{ Str::limit($category->description, 50) }}</td>
                             <td>
                                 <span class="badge bg-info">
                                     {{ $category->products->count() }} products

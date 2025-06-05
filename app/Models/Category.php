@@ -8,13 +8,13 @@ class Category extends Model
 {
     protected $fillable = [
         'name',
-        'slug',
         'description',
-        'status'
+        'status',
+        'store_id'
     ];
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class, 'category_id', 'id')->where('store_id', auth()->user()->store_id);
     }
 } 

@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
         $query = Product::with('category:id,name')->latest();
+        $query->where('store_id', auth()->user()->store_id);
 
         // Search filter
         if ($request->filled('search')) {
@@ -50,15 +52,30 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = Category::where('status', true)->get();
+        $categories = Category::where('status', true)
+        ->where('store_id', auth()->user()->store_id)
+        ->get();
         return view('admin.products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|unique:products|max:255',
-            'code' => 'required|string|unique:products',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')->where(function ($query) {
+                    return $query->where('store_id', auth()->user()->store_id);
+                })
+            ],
+            'code' => [
+                'required',
+                'string',
+                Rule::unique('products')->where(function ($query) {
+                    return $query->where('store_id', auth()->user()->store_id);
+                })
+            ],
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
@@ -71,6 +88,8 @@ class ProductController extends Controller
             $image->move(public_path('images'), $imageName);
             $validated['image'] = $imageName;
         }
+
+        $validated['store_id'] = auth()->user()->store_id;
 
         Product::create($validated);
 
@@ -88,8 +107,21 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
-            'name' => 'required|string|unique:products,name,' . $product->id . '|max:255',
-            'code' => 'required|string|unique:products,code,' . $product->id,
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')->ignore($product->id)->where(function ($query) {
+                    return $query->where('store_id', auth()->user()->store_id);
+                })
+            ],
+            'code' => [
+                'required',
+                'string',
+                Rule::unique('products')->ignore($product->id)->where(function ($query) {
+                    return $query->where('store_id', auth()->user()->store_id);
+                })
+            ],
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',

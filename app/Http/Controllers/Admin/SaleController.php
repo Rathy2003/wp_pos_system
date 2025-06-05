@@ -14,8 +14,10 @@ class SaleController extends Controller
     public function index(Request $request)
     {
         $query = Sale::with(['items.product'])
+            ->where('store_id', auth()->user()->store_id)
             ->withCount('items')
             ->latest();
+
 
         // Date range filter
         if ($request->filled(['start_date', 'end_date'])) {
@@ -46,9 +48,9 @@ class SaleController extends Controller
 
         // Get summary statistics
         $summary = [
-            'total_sales' => Sale::count(),
-            'total_revenue' => Sale::sum('total_amount'),
-            'avg_sale_value' => Sale::avg('total_amount'),
+            'total_sales' => Sale::where('store_id', auth()->user()->store_id)->count(),
+            'total_revenue' => Sale::where('store_id', auth()->user()->store_id)->sum('total_amount'),
+            'avg_sale_value' => Sale::where('store_id', auth()->user()->store_id)->avg('total_amount'),
             'total_items' => SaleItem::sum('quantity')
         ];
 
@@ -57,6 +59,7 @@ class SaleController extends Controller
 
     public function show(Sale $sale)
     {
+        $sale->where('store_id', auth()->user()->store_id);
         $sale->load(['items.product.category']);
         return view('admin.sales.show', compact('sale'));
     }

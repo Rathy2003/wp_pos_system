@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/x-icon">
     <title>Admin Dashboard - POS System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -237,42 +238,71 @@
                     Dashboard
                 </a>
             </li>
-            <li>
-                <a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products*') ? 'active' : '' }}">
-                    <i class="fas fa-box"></i>
-                    Products
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.categories') }}" class="{{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
-                    <i class="fas fa-tags"></i>
-                    Categories
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.sales') }}" class="{{ request()->routeIs('admin.sales*') ? 'active' : '' }}">
-                    <i class="fas fa-chart-line"></i>
-                    Sales
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('customers.index') }}" class="{{ request()->routeIs('customers*') ? 'active' : '' }}">
-                    <i class="fas fa-users"></i>
-                    Customers
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.reports.index') }}" class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
-                    <i class="nav-icon fas fa-chart-bar"></i>
-                    Reports
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.settings') }}" class="nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
-                    <i class="nav-icon fas fa-cog"></i>
-                    Settings
-                </a>
-            </li>
+            
+
+            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('stockholder'))
+                <li>
+                    <a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products*') ? 'active' : '' }}">
+                        <i class="fas fa-box"></i>
+                        Products
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.categories') }}" class="{{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
+                        <i class="fas fa-tags"></i>
+                        Categories
+                    </a>
+                </li>
+            @endif
+
+            @if(auth()->user()->hasRole('admin'))
+                <li>
+                    <a href="{{ route('admin.sales') }}" class="{{ request()->routeIs('admin.sales*') ? 'active' : '' }}">
+                        <i class="fas fa-chart-line"></i>
+                        Sales
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('customers.index') }}" class="{{ request()->routeIs('customers*') ? 'active' : '' }}">
+                        <i class="fas fa-users"></i>
+                        Customers
+                    </a>
+                </li>
+            @endif
+
+
+            @if(auth()->user()->hasRole('developer'))
+                <li>
+                    <a href="{{ route('stores.index') }}" class="{{ request()->routeIs('stores*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-store"></i>
+                        Store
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users*') ? 'active' : '' }}">
+                        <i class="fas fa-users"></i>
+                        Users
+                    </a>
+                </li>
+            @endif
+
+           
+            @if(auth()->user()->hasRole('admin'))
+                <li class="nav-item">
+                    <a href="{{ route('admin.reports.index') }}" class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-chart-bar"></i>
+                        Reports
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.settings') }}" class="nav-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+            @endif
+           
         </ul>
     </div>
 

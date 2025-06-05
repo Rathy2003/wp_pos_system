@@ -19,6 +19,8 @@
 !/public/images/.gitkeep
 /public/profile/*
 !/public/profile/.gitkeep
+/public/stores/*
+!/public/stores/.gitkeep
 /public/storage
 /storage/*.key
 /storage/pail

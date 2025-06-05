@@ -21,6 +21,7 @@ class ReportController extends Controller
     public function sales(Request $request)
     {
         $query = Sale::with(['items.product'])
+            ->where('store_id', auth()->user()->store_id)
             ->withCount('items')
             ->latest();
 
@@ -102,6 +103,7 @@ class ReportController extends Controller
     public function inventory()
     {
         $products = Product::with('category')
+            ->where('store_id', auth()->user()->store_id)
             ->select('*')
             ->selectRaw('CASE 
                 WHEN stock = 0 THEN "out_of_stock"
@@ -109,6 +111,7 @@ class ReportController extends Controller
                 ELSE "in_stock"
             END as stock_status')
             ->get();
+
 
         $summary = [
             'total_products' => $products->count(),

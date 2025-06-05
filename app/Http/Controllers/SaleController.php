@@ -24,6 +24,8 @@ class SaleController extends Controller
             'items.*.price' => 'required|numeric|min:0'
         ]);
 
+        $validated['store_id'] = auth()->user()->store_id;
+
         try {
             DB::beginTransaction();
 
@@ -34,7 +36,8 @@ class SaleController extends Controller
                 'total_amount' => $validated['total_amount'],
                 'tax_amount' => $validated['tax_amount'],
                 'net_amount' => $validated['net_amount'],
-                'loyalty_points' => floor($validated['total_amount']), // 1 point per dollar
+                'loyalty_points' => floor($validated['total_amount']), 
+                'store_id' => $validated['store_id']
             ]);
 
             // Create sale items and update product stock

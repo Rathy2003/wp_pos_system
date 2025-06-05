@@ -14,15 +14,16 @@ class DashboardController extends Controller
     public function index()
     {
         // Basic statistics
-        $totalSales = Sale::count();
-        $totalRevenue = Sale::sum('total_amount');
-        $totalProducts = Product::count();
-        $totalCustomers = Sale::distinct('customer_name')->whereNotNull('customer_name')->count();
+        $totalSales = Sale::where('store_id', auth()->user()->store_id)->count();
+        $totalRevenue = Sale::where('store_id', auth()->user()->store_id)->sum('total_amount');
+
+        $totalProducts = Product::where('store_id', auth()->user()->store_id)->count();
+        $totalCustomers = Sale::distinct('customer_name')->whereNotNull('customer_name')->where('store_id', auth()->user()->store_id)->count();
 
         // Today's statistics
         $today = Carbon::today();
-        $todaySales = Sale::whereDate('created_at', $today)->count();
-        $todayRevenue = Sale::whereDate('created_at', $today)->sum('total_amount');
+        $todaySales = Sale::whereDate('created_at', $today)->where('store_id', auth()->user()->store_id)->count();
+        $todayRevenue = Sale::whereDate('created_at', $today)->where('store_id', auth()->user()->store_id)->sum('total_amount');
 
         // Get sales for the last 7 days
         $lastWeekSales = Sale::select(
@@ -38,6 +39,7 @@ class DashboardController extends Controller
         // Get top selling products
         $topProducts = DB::table('sale_items')
             ->join('products', 'sale_items.product_id', '=', 'products.id')
+            ->where('products.store_id', auth()->user()->store_id)
             ->select(
                 'products.name',
                 DB::raw('SUM(sale_items.quantity) as total_quantity'),
@@ -63,6 +65,7 @@ class DashboardController extends Controller
 
         // Get payment method statistics
         $paymentStats = Sale::select('payment_method', DB::raw('COUNT(*) as count'))
+            ->where('store_id', auth()->user()->store_id)
             ->groupBy('payment_method')
             ->get()
             ->pluck('count', 'payment_method')
@@ -70,6 +73,7 @@ class DashboardController extends Controller
 
         // Get recent sales with items and customer info
         $recentSales = Sale::with(['items.product'])
+            ->where('store_id', auth()->user()->store_id)
             ->withCount('items')
             ->latest()
             ->take(5)

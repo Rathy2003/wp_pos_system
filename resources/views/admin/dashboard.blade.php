@@ -86,129 +86,134 @@
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <!-- Sales Chart -->
-        <div class="col-xl-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Sales Overview</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="salesChart" height="300"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Payment Methods -->
-        <div class="col-xl-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Payment Methods</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="paymentChart" height="300"></canvas>
+    @if(auth()->user()->hasRole('admin'))
+        <div class="row g-4 mb-4">
+            <!-- Sales Chart -->
+            <div class="col-xl-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Sales Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="salesChart" height="300"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="row g-4">
-        <!-- Recent Sales -->
-        <div class="col-xl-8">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Recent Sales</h5>
-                    <a href="{{ route('admin.sales') }}" class="btn btn-primary btn-sm">View All</a>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Customer</th>
-                                    <th>Products</th>
-                                    <th>Total</th>
-                                    <th>Date</th>
-                                    <th>Payment</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($recentSales as $sale)
-                                <tr>
-                                    <td>
-                                        <a href="{{ route('admin.sales.show', $sale->id) }}">#{{ $sale->id }}</a>
-                                    </td>
-                                    <td>{{ $sale->customer_name ?? 'Walk-in Customer' }}</td>
-                                    <td>
-                                        <span class="badge bg-info">{{ $sale->items_count }} items</span>
-                                    </td>
-                                    <td>${{ number_format($sale->total_amount, 2) }}</td>
-                                    <td>{{ $sale->created_at->format('M d, Y H:i') }}</td>
-                                    <td>
-                                        @if($sale->payment_method === 'cash')
-                                            <span class="badge bg-success">💵 Cash</span>
-                                        @else
-                                            <span class="badge bg-primary">💳 Card</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+            <!-- Payment Methods -->
+            <div class="col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Payment Methods</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="paymentChart" height="300"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Top Products & Low Stock -->
-        <div class="col-xl-4">
-            <!-- Top Products -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Top Selling Products</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        @foreach($topProducts as $product)
-                        <div class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-1">{{ $product->name }}</h6>
-                                    <small class="text-muted">{{ number_format($product->total_quantity) }} units sold</small>
-                                </div>
-                                <h6 class="text-success mb-0">${{ number_format($product->total_revenue, 2) }}</h6>
-                            </div>
+        <div class="row g-4">
+            <!-- Recent Sales -->
+            <div class="col-xl-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Recent Sales</h5>
+                        <a href="{{ route('admin.sales') }}" class="btn btn-primary btn-sm">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer</th>
+                                        <th>Products</th>
+                                        <th>Total</th>
+                                        <th>Date</th>
+                                        <th>Payment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($recentSales as $sale)
+                                    <tr>
+                                        <td>
+                                            <a href="{{ route('admin.sales.show', $sale->id) }}">#{{ $sale->id }}</a>
+                                        </td>
+                                        <td>{{ $sale->customer_name ?? 'Walk-in Customer' }}</td>
+                                        <td>
+                                            <span class="badge bg-info">{{ $sale->items_count }} items</span>
+                                        </td>
+                                        <td>${{ number_format($sale->total_amount, 2) }}</td>
+                                        <td>{{ $sale->created_at->format('M d, Y H:i') }}</td>
+                                        <td>
+                                            @if($sale->payment_method === 'cash')
+                                                <span class="badge bg-success">💵 Cash</span>
+                                            @else
+                                                <span class="badge bg-primary">💳 Card</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                        @endforeach
                     </div>
                 </div>
             </div>
 
-            <!-- Low Stock Products -->
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Low Stock Alert</h5>
-                    <a href="{{ route('admin.products') }}" class="btn btn-primary btn-sm">View All</a>
-                </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        @foreach($lowStockProducts as $product)
-                        <div class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-1">{{ $product->name }}</h6>
-                                    <small class="text-muted">{{ $product->category->name }}</small>
+            <!-- Top Products & Low Stock -->
+            <div class="col-xl-4">
+                <!-- Top Products -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">Top Selling Products</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            @foreach($topProducts as $product)
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ $product->name }}</h6>
+                                        <small class="text-muted">{{ number_format($product->total_quantity) }} units sold</small>
+                                    </div>
+                                    <h6 class="text-success mb-0">${{ number_format($product->total_revenue, 2) }}</h6>
                                 </div>
-                                <span class="badge bg-danger">{{ $product->stock }} left</span>
                             </div>
+                            @endforeach
                         </div>
-                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Low Stock Products -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Low Stock Alert</h5>
+                        <a href="{{ route('admin.products') }}" class="btn btn-primary btn-sm">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            @foreach($lowStockProducts as $product)
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ $product->name }}</h6>
+                                        <small class="text-muted">{{ $product->category->name }}</small>
+                                    </div>
+                                    <span class="badge bg-danger">{{ $product->stock }} left</span>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endif
+
+  
+
+   
 </div>
 @endsection
 
